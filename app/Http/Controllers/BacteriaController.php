@@ -40,8 +40,11 @@ class BacteriaController extends Controller
     public function store(Request $request)
     {
         try{
+           /*  $request->validate([
+                'Telefono' => 'required',
+            ]); */
             $Bacterias = new Bacteria();
-        $Bacterias->descripcion = $request->get('descripcion');
+        $Bacterias->descripcion = $request->get('descripcionCreate');
         $Bacterias->save();
         return redirect('/bacterias');
         }
@@ -77,7 +80,7 @@ class BacteriaController extends Controller
 
             $Bacteria = Bacteria::find($id);
     
-            $Bacteria->descripcion = $request->get('descripcion');
+            $Bacteria->descripcion = $request->get('descripcionEdit');
             $Bacteria->save();
             return redirect('/bacterias');
             }

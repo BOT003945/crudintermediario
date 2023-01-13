@@ -52,18 +52,12 @@ class DetalleGrupoAntibioticoController extends Controller
     {
         
     }
-    //$pacientes = Paciente::latest()
-        //->where('Nombre', 'LIKE', '%'.$buscapor.'%')
-        //->where('created_at', 'LIKE', '%'.$f1.'%')
-        //->where('created_at', 'LIKE', '%'.$fecha_fin.'%')
-        //->where('created_at', 'BETWEEN', $f1.'AND'.$fecha_fin)
-        //->paginate($this::PAGINACION);
-        //->with('pacientes',$pacientes)
+
     public function edit($id, Request $request)
     {
         /* $detalleGA = DetalleGrupoAntibiotico::distinct('id_Antibiotico')->get();
         $detallesGA = $detalleGA->unique('id_Antibiotico'); */
-        /* $id =  Crypt::decrypt($id); */
+        $id =  Crypt::decrypt($id);
         return view('detallegrupoantibioticos.edit'/* ,compact('detallesGA') */)->with([
             'grupo_antibiotico' => GrupoAntibiotico::findorFail($id), //Para datos de la tabla de Grupos de Antibioticos
             'antibioticos' => Antibiotico::all(), //Para el select de antibioticos disponibles

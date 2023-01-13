@@ -12,6 +12,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 
 class FormatoController extends Controller
@@ -19,7 +20,7 @@ class FormatoController extends Controller
     public function index()
     {
         $estudios = Estudio::all();
-        return view('formatos.index')->with('estudios', $estudios);
+        return view('estudios.index')->with('estudios', $estudios);
     }
 
     /**
@@ -30,12 +31,12 @@ class FormatoController extends Controller
     public function create()
     {
     
-        return view('formatos.create')->with([
+        return view('estudios.create')->with([
             'deptos' => Depto::all(),
             //'estudios' => Estudio::all(),
             'pruebas' =>  DB::table('pruebas as pruebas')
             ->join('deptos as deptos','pruebas.id_Departamento','=','deptos.id')
-            ->select('pruebas.id as idPrueba','pruebas.id_Departamento','pruebas.Prueba','pruebas.cveprueba',
+            ->select('pruebas.idPrueba','pruebas.id_Departamento','pruebas.Prueba','pruebas.cveprueba',
             'deptos.id','deptos.Depto')->get()
         ]);
     }
@@ -43,6 +44,9 @@ class FormatoController extends Controller
     public function store(Request $request)
     {
         try{
+           /*  $request->validate([
+                'id_prueba' => 'required',
+            ]); */
             DB::beginTransaction();
             $estudios = new Estudio();
             $estudios->Codigo = $request->get('codigo');
@@ -60,6 +64,10 @@ class FormatoController extends Controller
             $estudios->TipoMuestra = $request->get('TipoMuestra');
             $estudios->AlineacionTitulo = $request->get('alineaciontitulo');
             $estudios->ColorTitulo = $request->get('colortitulo');
+            $estudios->sucursal = session('SUCURSAL');
+            $estudios->espaquete = 0;
+            $estudios->eliminar = 0;
+            $estudios->SucProceso = session('SUCURSAL');
             $estudios->save();
             //$Departamento = $request->get('departamento');
             $Prueba = $request->get('prueba');
@@ -68,26 +76,31 @@ class FormatoController extends Controller
             $cont = 0;
             if($request->filled('pruebaNombre'))
             {
+               /*  request()->validate([
+                    'id_prueba' => ['required']
+                ], [
+                    'descripcion' => 'El campo de descripción es necesario.'
+                ]); */
                 while($cont < count($pruebaNombre))
-                { 
+                {
                     $formatos = new Formato();
-                    $formatos->id_Estudio= $estudios->id;
-                    $formatos->idprueba = $Prueba[$cont];
+                    $formatos->id_Estudio= $estudios->idEstudio;
+                    $formatos->id_prueba = $Prueba[$cont];
                     $formatos->Prueba = $pruebaNombre[$cont];
                     $formatos->Orden = $cont;
-                    $formatos->sucursal='00';  
+                    $formatos->sucursal= session('SUCURSAL');
                     $formatos->save();
                     $cont=$cont+1;            
                 }
                 
             }
             DB::commit();
-        }
+       }
         catch(Exception $e){
             DB::rollback();
             return back()->with('error', $e->getMessage());
         }
-        return redirect('/formatos');
+        return redirect('/estudios');
     }
 
     /**
@@ -104,13 +117,13 @@ class FormatoController extends Controller
     public function edit($id)
     {
         $id =  Crypt::decrypt($id);
-        return view('formatos.edit')->with([
+        return view('estudios.edit')->with([
             'estudio' => Estudio::findorFail($id),
             'deptos' => Depto::all(),
             'formatos' => DB::select('SELECT * FROM formatos WHERE id_Estudio = ? ORDER BY Orden ASC;', [$id]),
             'pruebas' =>  DB::table('pruebas as pruebas')
             ->join('deptos as deptos','pruebas.id_Departamento','=','deptos.id')
-            ->select('pruebas.id as idPrueba','pruebas.id_Departamento','pruebas.Prueba','pruebas.cveprueba',
+            ->select('pruebas.idPrueba','pruebas.id_Departamento','pruebas.Prueba','pruebas.cveprueba',
             'deptos.id','deptos.Depto')->get(),
 
             // 'formatos' =>  DB::table('formatos')
@@ -154,6 +167,10 @@ class FormatoController extends Controller
             $estudio->TipoMuestra = $request->get('TipoMuestra');
             $estudio->AlineacionTitulo = $request->get('alineaciontitulo');
             $estudio->ColorTitulo = $request->get('colortitulo');
+            $estudio->sucursal = session('SUCURSAL');
+            $estudio->espaquete = 0;
+            $estudio->eliminar = 0;
+            $estudio->SucProceso = session('SUCURSAL');
             $estudio->save();
             DB::select('DELETE FROM formatos WHERE id_Estudio = ?;', [$id]);
             //$Departamento = $request->get('departamento');
@@ -168,7 +185,7 @@ class FormatoController extends Controller
                     $formatos = new Formato();
                     $formatos->id_Estudio= $id;
                     //$formatos->idDepto = $Departamento[$cont];
-                    $formatos->idprueba = $Prueba[$cont];
+                    $formatos->id_prueba = $Prueba[$cont];
                     $formatos->Prueba = $pruebaNombre[$cont];
                     $formatos->Orden = $cont;
                     $formatos->sucursal='00';  
@@ -194,7 +211,7 @@ class FormatoController extends Controller
             DB::rollback();
             return back()->with('error', $e->getMessage());
         }
-        return redirect('/formatos');
+        return redirect('/estudios');
     }
 
     /**
@@ -203,11 +220,18 @@ class FormatoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
-        $estudio = Estudio::find($id);
-        $estudio->delete();
+        try{
+            $estudio = Estudio::find($id);
+            $estudio->delete();
 
-        return redirect('/formatos')->with('eliminar', 'echo');
+            return redirect('/estudios')->with('eliminar', 'echo');
+        }
+        catch(Exception $e)
+        {
+            return back()->with('error', $e->getMessage());
+        }
+        
     }
 }

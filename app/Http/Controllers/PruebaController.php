@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Prueba;
 use App\Models\Depto;
 use App\Models\Metodo;
-use App\Models\Valoresreferencium;
+use App\Models\Valoresreferencia;
 use Exception;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -31,9 +31,8 @@ class PruebaController extends Controller
      */
     public function create()
     {
-        $deptos = Depto::all();
-        $valoresreferancias = Valoresreferencium::all();
-        $metodos = Metodo::all();
+        $deptos = DB::select('SELECT * FROM deptos ORDER BY Depto ASC');
+        $metodos = DB::select('SELECT * FROM metodos ORDER BY descripcion ASC');
         return view('pruebas.create', compact('metodos'))->with('deptos', $deptos);
     }
 
@@ -108,7 +107,7 @@ class PruebaController extends Controller
             $pruebas = new Prueba();
             $pruebas->cveprueba = $request->get('cveprueba');
             $pruebas->abreviatura = $request->get('abreviatura');
-            $pruebas->descripcion = $request->get('descripcion');
+            $pruebas->Descripcion = $request->get('descripcion');
             $pruebas->Prueba = $request->get('Prueba');
             $pruebas->hoja_trabajo = $request->get('hoja_trabajo');
             $pruebas->id_Departamento = $request->get('departamento');
@@ -118,7 +117,7 @@ class PruebaController extends Controller
             $pruebas->formula = $request->get('formula');
             $pruebas->imprimir_negritas = $request->get('imprimir_negritas');
             $pruebas->antibiograma = $request->get('antibiograma');
-            $pruebas->medida = $request->get('medida');
+            $pruebas->Medida = $request->get('medida');
             $pruebas->sexo = $request->get('sexo');
             $pruebas->TipoResultado = $request->get('TipoResultado');
             $pruebas->Resultado_default = $request->get('Resultado_default');
@@ -134,7 +133,7 @@ class PruebaController extends Controller
             $pruebas->notas_internas = $request->get('notas_internas');
             $pruebas->tipo_valor_normalidad = $request->get('tipo_valor_normalidad');
             $pruebas->valor_normalidad_texto = $request->get('valor_normalidad_texto');
-            $pruebas->sucursal = "00";
+            $pruebas->sucursal = session('SUCURSAL');
 
             $pruebas->save();
             if("Rango númerico" === $pruebas->tipo_valor_normalidad = $request->get('tipo_valor_normalidad'))
@@ -145,19 +144,21 @@ class PruebaController extends Controller
                 $EdadMax = $request->get('EdadMax1');
                 $ValMin = $request->get('RefMin1');
                 $ValMax = $request->get('RefMax1');
+                $TextoValores = $request->get('TextoValores');
 
                 $cont = 0;
                 if($request->filled('sexovalref1')){
                     while($cont < count($SexoValRef)){ 
-                        $valores = new Valoresreferencium();
-                        $valores->claveprueba= $pruebas->id;
+                        $valores = new Valoresreferencia();
+                        $valores->id_prueba= $pruebas->idPrueba;
                         $valores->Sexo = $SexoValRef[$cont];
                         $valores->Edad= $Edad[$cont];
                         $valores->EdadMin= $EdadMin[$cont];
                         $valores->EdadMax= $EdadMax[$cont];
                         $valores->ValMin= $ValMin[$cont];
                         $valores->ValMax= $ValMax[$cont];
-                        $valores->sucursal='00';  
+                        $valores->TextoValores= $TextoValores[$cont];
+                        $valores->sucursal=session('SUCURSAL');  
                         $valores->save();
                         $cont=$cont+1;            
                     }
@@ -184,9 +185,9 @@ class PruebaController extends Controller
         $id =  Crypt::decrypt($id);
         return view('pruebas.edit')->with([
             'prueba' => Prueba::findorFail($id),
-            'deptos' => Depto::all(),
-            'metodos' => Metodo::all(),
-            'valoresreferancias' => Valoresreferencium::all()->where('claveprueba', '=', $id)
+            'deptos' => DB::select('SELECT * FROM deptos ORDER BY Depto ASC'),
+            'metodos' => DB::select('SELECT * FROM metodos ORDER BY descripcion ASC'),
+            'valoresreferancias' => Valoresreferencia::all()->where('id_prueba', '=', $id)
         ]);
     }
 
@@ -198,7 +199,7 @@ class PruebaController extends Controller
             $prueba = Prueba::find($id);
             $prueba->cveprueba = $request->get('idss');
             $prueba->abreviatura = $request->get('abreviatura');
-            $prueba->descripcion = $request->get('descripcion');
+            $prueba->Descripcion = $request->get('descripcion');
             $prueba->Prueba = $request->get('Prueba');
             $prueba->hoja_trabajo = $request->get('hoja_trabajo');
             $prueba->id_Departamento = $request->get('departamento');
@@ -224,7 +225,7 @@ class PruebaController extends Controller
             $prueba->notas_internas = $request->get('notas_internas');
             $prueba->tipo_valor_normalidad = $request->get('tipo_valor_normalidad');
             $prueba->valor_normalidad_texto = $request->get('valor_normalidad_texto');
-            $prueba->sucursal = "00";
+            $prueba->sucursal = session('SUCURSAL');
             $prueba->save();
             /* if("Rango númerico" === $prueba->tipo_valor_normalidad)
             {
@@ -285,28 +286,31 @@ class PruebaController extends Controller
                 
             if("Rango númerico" === $prueba->tipo_valor_normalidad)
             {
-                DB::select('DELETE FROM valoresreferencia WHERE claveprueba = ?;', [$id]);
+                DB::select('DELETE FROM valoresreferencia WHERE id_prueba = ?;', [$id]);
+                
                 $SexoValRef = $request->get('sexovalref1');
                 $Edad = $request->get('Edad1');
                 $EdadMin = $request->get('EdadMin1');
                 $EdadMax = $request->get('EdadMax1');
                 $ValMin = $request->get('RefMin1');
                 $ValMax = $request->get('RefMax1');
+                $TextoValores = $request->get('TextoValores');
 
                 $cont = 0;
                 if($request->filled('sexovalref1'))
                 {
                     while($cont < count($SexoValRef))
                     { 
-                        $valores = new Valoresreferencium();
-                        $valores->claveprueba= $id;
+                        $valores = new Valoresreferencia();
+                        $valores->id_prueba= $id;
                         $valores->Sexo = $SexoValRef[$cont];
                         $valores->Edad= $Edad[$cont];
                         $valores->EdadMin= $EdadMin[$cont];
                         $valores->EdadMax= $EdadMax[$cont];
                         $valores->ValMin= $ValMin[$cont];
                         $valores->ValMax= $ValMax[$cont];
-                        $valores->sucursal='00';  
+                        $valores->TextoValores= $TextoValores[$cont];
+                        $valores->sucursal= session('SUCURSAL');  
                         $valores->save();
                         $cont=$cont+1;
                     }
@@ -332,9 +336,14 @@ class PruebaController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        $prueba = Prueba::find($id);
-        $prueba->delete();
-
-        return redirect('/pruebas')->with('eliminar', 'echo');
+        try{
+            $prueba = Prueba::find($id);
+            $prueba->delete();
+            return redirect('/pruebas')->with('eliminar', 'echo');
+        }
+        catch(Exception $e)
+        {
+            return back()->with('errorforaneo', $e->getMessage());
+        }
     }    
 }

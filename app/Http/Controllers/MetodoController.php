@@ -12,15 +12,10 @@ class MetodoController extends Controller
 
     public function index()
     {
-        /* $doctores = Doctor::all();
-        if(request()->ajax()) {
-            return datatables()->of(Doctor::select('*'))
-            ->addColumn('action', 'doctores.edit2')
-            ->rawColumns(['action'])
-            ->addIndexColumn()
-            ->make(true);
-        }
-        return view('doctores.index')->with('doctores',$doctores); */
+        /* if(User::where('email', $email)->count() > 0){
+            #code
+        } */
+        
         $metodos = Metodo::all();
         return view('metodos.index')->with('metodos', $metodos);
     }
@@ -43,16 +38,26 @@ class MetodoController extends Controller
      */
     public function store(Request $request)
     {
-        try{
+        
+        /* try{ */
+
+            /* $request->validate([
+                'descripcion' => 'required',
+            ]); */
+            request()->validate([
+                'descripcion' => ['required']
+            ], [
+                'descripcion' => 'El campo de descripción es necesario.'
+            ]);
             $metodos = new Metodo();
             $metodos->descripcion = $request->get('descripcion');
             $metodos->save();
             return redirect('metodos');
-        }
+        /* }
         catch(Exception $e)
         {
             return back()->with('error', $e->getMessage());
-        }
+        } */
     }
     public function show($id)
     {
@@ -63,7 +68,7 @@ class MetodoController extends Controller
     {
         $id =  Crypt::decrypt($id);
         $metodo = Metodo::findorFail($id);
-        return view('metodos/edit')->with('metodo', $metodo);
+        return view('metodos/index')->with('metodo', $metodo);
         /* $where = array('id' => $request->id);
         $metodos  = Metodo::where($where)->first();
       
@@ -80,6 +85,7 @@ class MetodoController extends Controller
     public function update(Request $request, $id)
     {
         try{
+            $id =  Crypt::decrypt($id);
             $metodo = Metodo::find($id);
             $metodo->descripcion = $request->get('Descripcion');
             $metodo->save();
@@ -98,8 +104,14 @@ class MetodoController extends Controller
      */
     public function destroy($id)
     {
-        $metodo = Metodo::find($id);
-        $metodo->delete();
-        return redirect('/metodos')->with('eliminar', 'Echo');
+        try{
+            $metodo = Metodo::find($id);
+            $metodo->delete();
+            return redirect('/metodos')->with('eliminar', 'Echo');
+        }
+        catch(Exception $e)
+        {
+            return back()->with('integrityviolation', $e->getMessage());
+        }
     }
 }

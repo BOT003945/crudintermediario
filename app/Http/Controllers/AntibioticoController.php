@@ -28,7 +28,7 @@ class AntibioticoController extends Controller
      */
     public function create()
     {
-        return view('bacterias.create');
+       //
     }
 
     /**
@@ -82,7 +82,7 @@ class AntibioticoController extends Controller
 
         $Antibiotico = Antibiotico::find($id);
 
-        $Antibiotico->descripcion = $request->get('descripcion');
+        $Antibiotico->descripcion = $request->get('descripcionEdit');
         $Antibiotico->save();
         return redirect('/antibioticos');
         }
