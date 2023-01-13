@@ -9,7 +9,7 @@
           </button>
         </div>
         <div class="modal-body">
-            <form id="formulario" enctype="multipart/form-data" action="" method="POST">
+            <form id="formulario" enctype="multipart/form-data" method="POST">
                 @csrf
                 @method('PUT')
                        <div class="tabpanel">
@@ -25,12 +25,13 @@
                                         <!----------------------descripcion---------------->
                                         <div class="form-group">
                                           <label>Nombre del método:</label>
-                                          <input {{-- value="{{$metodo->descripcion}}" --}} required class="form-control" id="Descripcion" name="Descripcion" maxlength="50">
+                                          <input title="Sin caracteres especiales • Mínimo 2 carácteres" pattern="[A-Za-z0-9À-ÿ\u00f1\u00d1 '`.-_]*" required class="form-control" id="Descripcion" name="Descripcion" maxlength="50">
                                         </div> 
                                       </div>                                                               
                                    </div>
                                 </div>
                              <div style="text-align:right">
+                              <input name"_token" hidden value="{{ csrf_token() }}" type="text">
                               <a href="/metodos"><button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="far fa fa-arrow-left"></i> Regresar</button></a>
                               <button type="submit" class="btn btn-primary close-modal" >Guardar</button>         
                                </div>

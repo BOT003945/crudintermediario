@@ -23,7 +23,7 @@
                                     <!----------------------descripcion---------------->
                                     <div class="form-group">
                                       <label for="descripcion">Nombre del método:</label>
-                                      <input required class="form-control" id="descripcion" name="descripcion" tabindex="3" maxlength="50">
+                                      <input title="Sin caracteres especiales • Mínimo 2 carácteres" pattern="[A-Za-z0-9À-ÿ\u00f1\u00d1 '`.-_]*"  class="form-control" id="descripcion" name="descripcion" tabindex="3" maxlength="50">
                                     </div> 
                                   </div>                                                               
                                </div>

@@ -18,7 +18,7 @@
                           <!----------------------descripcion---------------->
                           <div class="form-group">
                             <label>Nombre del método:</label>
-                            <input value="{{$metodo->descripcion}}" required class="form-control" id="Descripcion" name="Descripcion" maxlength="50">
+                            <input required class="form-control" id="Descripcion" name="Descripcion" maxlength="50">
                           </div> 
                         </div>                                                               
                      </div>

@@ -47,7 +47,13 @@
                                     <div class="form-group">
                                         <label class="float-left" for="descripcion">Val.Máxima:</label>
                                         <input class="form-control" id="RefMax" name="RefMax" step="0.01" value="0.00" placeholder="0.00" type="number" max="100" >
-                                    </div>                                    
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="float-left" for="descripcion">Val.Máxima:</label>
+                                        <textarea class="form-control" id="Textos" name="Textos" step="0.01" value="0 - 0" placeholder="0.00" max="150">
+
+                                        </textarea>
+                                    </div>
                                 </div>                                                               
                             </div>
                         </div>

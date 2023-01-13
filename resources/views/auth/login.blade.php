@@ -15,11 +15,12 @@
         <form method="POST" action="{{ route('login') }}">
             @csrf
             <div>
-                {{-- <select name="SesionSUCURSAL" id="SesionSUCURSAL" class="block mt-1 w-full">    
+                {{-- {{session('selectSucursal')}} --}}
+                <select name="SesionSUCURSAL" id="SesionSUCURSAL" class="block mt-1 w-full">    
                     @foreach ($sucursales as $sucursal)
-                        <option value="{{$sucursal->id}}">{{$sucursal->id}} - {{$sucursal->descripcion}}</option>
+                        <option value="{{$sucursal->idSucursal}}">{{$sucursal->idSucursal}} - {{$sucursal->descripcion}}</option>
                     @endforeach
-                </select>  --}}      
+                </select>
             </div>
     
             <div>

@@ -17,6 +17,11 @@
         </a>
     </div>
     <div class="card-body">
+        @if($message = Session::get("errorforaneo"))
+		<div class="alert alert-danger">
+		    <p>{{$message="Error."}}</p>
+		</div>
+		@endif
         <div class="table-responsive">
             <table id="pruebas" class="table table-striped table-bordered">
                 <thead>
@@ -30,14 +35,14 @@
                 <tbody>
                     @foreach ($pruebas as $prueba)
                     <tr>
-                        <td style="width: 10%;">{{$prueba->id}}</td>
+                        <td style="width: 10%;">{{$prueba->idPrueba}}</td>
                         <td style="width: 10%;">{{$prueba->abreviatura}}</td>
                         <td style="width: 70%;">{{$prueba->Descripcion}}</td>
                         <td style="width: 10%;"><center>
-                            <form class="formulario" action="{{route('pruebas.destroy',$prueba->id)}}" method ="POST">
+                            <form class="formulario" action="{{route('pruebas.destroy',$prueba->idPrueba)}}" method ="POST">
                                 @csrf
                                 @method('DELETE')
-                                <a href="{{route('pruebas.edit',Crypt::encrypt( $prueba->id ))}}" class="btn-xs btn-primary fa fa fa-pencil"><i class="fa fa-edit"></i></a>
+                                <a href="{{route('pruebas.edit',Crypt::encrypt( $prueba->idPrueba ))}}" class="btn-xs btn-primary fa fa fa-pencil"><i class="fa fa-edit"></i></a>
                             
                                <button class="btn-xs btn btn-danger"><i class="fa fa-trash"></i></button>
                             </form></center>
@@ -72,7 +77,7 @@
             e.preventDefault();
             Swal.fire({
   title: '¿Estás seguro?',
-  text: "¡No podrás revertir esta acción!",
+  text: "¡Esta prueba podría estar siendo utilizada en algún estudio o paquete!",
   icon: 'warning',
   showCancelButton: true,
   confirmButtonColor: '#3085d6',

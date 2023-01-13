@@ -5,11 +5,18 @@
 @stop
 
 @section('content')
+@if($message = Session::get("error"))
+<div class="alert alert-danger">
+    <h2>Problema:</h2>
+    <p>{{$message="Empresa previamente registrado."}}</p>
+    <p>{{$message="Si intenta eliminar alguna empresa, esta puede estar ligada a un paciente."}}</p>
+</div>
+@endif
 <div class="card">
     <div class="card-header">
-        <a href="/empresas-pdf" style="text-decoration:none;color:aliceblue;"><button type="button" class="btn btn-info" >Imprimir Reporte</button></a>
+        <a href="/empresas-pdf" target="_blank" style="text-decoration:none;color:aliceblue;"><button type="button" class="btn btn-info" >Imprimir Reporte</button></a>
         <a style="text-decoration:none;color:aliceblue;" class="float-right d-none d-sm-block">
-            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModal">
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#createEmpresaModal">
                <i class="far fa fa-plus-square"></i> Agregar Empresa
            </button> 
         </a>
@@ -37,7 +44,7 @@
                                 @csrf
                                 @method('DELETE')
                                 {{-- <a href="{{route('metodos.edit',Crypt::encrypt($metodo->id))}}" class="btn-xs btn-primary fa fa fa-pencil"><i class="fa fa-edit"></i></a> --}}
-                                <button type="button" id="btnModal{{$empresa->idEmpresa}}" value="{{$empresa->idEmpresa}}_{{$empresa->Nombre}}_{{$empresa->tel1}}_{{$empresa->tel2}}_{{$empresa->cp}}_{{$empresa->pais}}_{{$empresa->Entidad}}_{{$empresa->Ciudad}}" onclick="modal('{{$empresa->idEmpresa}}')" data-toggle="modal" data-target="#updateModal" class="btn-xs btn btn-primary fa fa fa-pencil">
+                                <button type="button" id="btnModal{{$empresa->idEmpresa}}" value="{{$empresa->idEmpresa}}~{{$empresa->Nombre}}~{{$empresa->tel1}}~{{$empresa->tel2}}~{{$empresa->rfc}}~{{$empresa->direccion}}~{{$empresa->cp}}~{{$empresa->pais}}~{{$empresa->Entidad}}~{{$empresa->Ciudad}}" onclick="modal('{{$empresa->idEmpresa}}')" data-toggle="modal" data-target="#updateEmpresaModal" class="btn-xs btn btn-primary fa fa fa-pencil">
                                     <i class="fa fa-edit"></i>
                                 </button>
                                <button class="btn-xs btn btn-danger"><i class="fa fa-trash"></i></button>
@@ -63,39 +70,31 @@
 
 <script>
 function modal(index){
-    var valor_modal = document.getElementById('btnModal'+index).value.split('_');
+    var valor_modal = document.getElementById('btnModal'+index).value.split('~');
     id = valor_modal[0];
     empresa = valor_modal[1];
     tel1 = valor_modal[2];
-        sexo = valor_modal[3];
-        empresa = valor_modal[4];
-        telefono = valor_modal[5];
-        email = valor_modal[6];
-        rfc = valor_modal[7];
-        calle = valor_modal[8];
-        numero = valor_modal[9];
-        colonia = valor_modal[10];
-        cp = valor_modal[11];
-        pais = valor_modal[12];
-        estado = valor_modal[13];
-        municipio = valor_modal[14];
-        var valor_seleccionado = "{{route('empresas.update', 'valor' )}}";
-        valor_seleccionado = valor_seleccionado.replace('valor', index);
+    tel2 = valor_modal[3];
+    rfc = valor_modal[4];
+    direccion = valor_modal[5];
+    cp = valor_modal[6];
+    pais = valor_modal[7];
+    estado = valor_modal[8];
+    ciudad = valor_modal[9];
+
+    var valor_seleccionado = "{{route('empresas.update', 'valor' )}}";
+    valor_seleccionado = valor_seleccionado.replace('valor', index);
         
-        $("#formulario").attr("action", valor_seleccionado);
-        $("#NombreEdit").val(empresa);
-        $("#FecNacEdit").val(fechaNac);
-        $("#EmpresaEdit").val(empresa);
-        $("#TelefonoEdit").val(telefono);
-        $("#emailEdit").val(email);
-        $("#CpEdit").val(cp);
-        $("#rfcEdit").val(rfc);
-        $("#calleEdit").val(calle);
-        $("#NumeroEdit").val(numero);
-        $("#ColoniaEdit").val(colonia);
-        $("#paisEdit").val(pais);
-        $("#EstadoEdit").val(estado);
-        $("#MunicipioEdit").val(municipio);
+    $("#empresaFormulario").attr("action", valor_seleccionado);
+    $("#NombreEditEmpresa").val(empresa);
+    $("#tel1EditEmpresa").val(tel1);
+    $("#tel2EditEmpresa").val(tel2);
+    $("#rfcEditEmpresa").val(rfc);
+    $("#direccionEditEmpresa").val(direccion);
+    $("#CpEditEmpresa").val(cp);
+    $("#paisEditEmpresa").val(pais);
+    $("#EstadoEditEmpresa").val(estado);
+    $("#MunicipioEditEmpresa").val(ciudad);
 }
 </script>
     

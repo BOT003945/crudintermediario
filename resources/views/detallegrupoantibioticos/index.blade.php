@@ -9,25 +9,24 @@
 
 <div class="card">
     <div class="card-header">
-        <form>
+        {{-- <form>
             @csrf
             <select name="location_id" id="addLocationIdReq" onchange="ShowSelected();">
                 @foreach ($grupo_antibioticos as $grupo_antibiotico)
-                <option value="{{$grupo_antibiotico->id}}">{{$grupo_antibiotico->descripcion}}</option>
+                <option value="{{$grupo_antibiotico->idGrupoAntibiotico}}">{{$grupo_antibiotico->descripcion}}</option>
                 @endforeach
             </select>            
             <a id="link" href="" 
                 class="btn-xs btn-primary fa fa fa-pencil"><i class="fa fa-edit"></i></a>
             <a href="#" data-target="#updateModal" data-toggle="modal" class="identifyingClass" data-id="">Open Modal</a>
             
-        </form>
+        </form> --}}
         <a style="text-decoration:none;color:aliceblue;" class="float-right d-none d-sm-block">
             <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModal">
                <i class="far fa fa-plus-square"></i> Agregar
            </button> 
         </a>
         @include('detallegrupoantibioticos.create')
-        @include('detallegrupoantibioticos.update')
     </div>
     <div class="card-body">
         @if($message = Session::get("error"))
@@ -48,9 +47,9 @@
                     <tr>
                         <td style="width: 92%;">{{$grupo_antibiotico->descripcion}}</td>
                         <td><center>
-                            <form class="formulario" action="{{route("detallegrupoantibioticos.destroy",$grupo_antibiotico->id)}}" method ="POST">
+                            <form class="formulario" action="{{route("detallegrupoantibioticos.destroy",$grupo_antibiotico->idGrupoAntibiotico)}}" method ="POST">
                                 
-                                <a href="{{route('detallegrupoantibioticos.edit',/* Crypt::encrypt( */$grupo_antibiotico->id/* ) */)}}" 
+                                <a href="{{route('detallegrupoantibioticos.edit',Crypt::encrypt($grupo_antibiotico->idGrupoAntibiotico))}}" 
                                     class="btn-xs btn-primary fa fa fa-pencil"><i class="fa fa-edit"></i></a>
                                 {{--<a href="{{route('detallegrupoantibioticos.edit',Crypt::encrypt($grupo_antibiotico->id))}}" 
                                     class="btn-xs btn-primary fa fa fa-pencil"><i class="fa fa-edit"></i></a>--}}
@@ -83,9 +82,7 @@ $('#addLocationIdReq').on('change', function() {
     $("#updateModal").val(valor_seleccionado);
 });
 </script>
-{{-- $('#updateModal2').on('shown.bs.modal', function () {
-    $('#myInput').trigger('focus')
-}) --}}
+
 <script>
     $('#addLocationIdReq').on('change', function() {
         var valor_seleccionado = "detallegrupoantibioticos/" + this.value + "/edit";

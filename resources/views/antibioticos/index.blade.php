@@ -13,11 +13,12 @@
            </button> 
         </a>
         @include('antibioticos.create')
+        @include('antibioticos.edit')
     </div>
     <div class="card-body">
         @if($message = Session::get("error"))
 		<div class="alert alert-danger">
-		   <p>{{$message="Antibiótico previamente registrado."}}</p>
+		   <p>{{$message="Error. Duplicidad"}}</p>
 		</div>
 	    @endif
         <div class="table-responsive">
@@ -33,10 +34,13 @@
                     <tr>
                         <td style="text-transform: uppercase;width: 92%;">{{$antibiotico->descripcion}}</td>
                         <td><center>
-                            <form class="formulario" action="{{route('antibioticos.destroy',$antibiotico->id)}}" method ="POST">
+                            <form class="formulario" action="{{route('antibioticos.destroy',$antibiotico->idAntibiotico)}}" method ="POST">
                                 @csrf
                                 @method('DELETE')
-                                <a href="{{route('antibioticos.edit',Crypt::encrypt($antibiotico->id))}}" class="btn-xs btn-primary fa fa fa-pencil"><i class="fa fa-edit"></i></a>
+                                {{-- <a href="{{route('antibioticos.edit',Crypt::encrypt($antibiotico->idAntibiotico))}}" class="btn-xs btn-primary fa fa fa-pencil"><i class="fa fa-edit"></i></a> --}}
+                                <button type="button" id="btnModal{{$antibiotico->idAntibiotico}}" value="{{$antibiotico->idAntibiotico}}_{{$antibiotico->descripcion}}" onclick="modal('{{$antibiotico->idAntibiotico}}')" data-toggle="modal" data-target="#editAntiLabel" class="btn-xs btn btn-primary fa fa fa-pencil">
+                                    <i class="fa fa-edit"></i>
+                                 </button>
                             
                                <button class="btn-xs btn btn-danger"><i class="fa fa-trash"></i></button>
                                 
@@ -55,7 +59,19 @@
     <link href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" rel="stylesheet">
 @stop
 
-@section('js') 
+@section('js')
+<script>
+    function modal(index){
+        var valor_modal = document.getElementById('btnModal'+index).value.split('_');
+        id = valor_modal[0];
+        descripcion = valor_modal[1];
+        var valor_seleccionado = "{{route('antibioticos.update', 'valor' )}}";
+        valor_seleccionado = valor_seleccionado.replace('valor', index)
+    
+        $("#formulario").attr("action", valor_seleccionado);
+        $("#descripcionEdit").val(descripcion);
+    }
+</script>
 {{--SweetAlert Vista--}}
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -92,7 +108,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('#antibioticos').DataTable({"order": [[ 0, 'desc' ]]});
+        $('#antibioticos').DataTable({"order": [[ 0, 'asc' ]]});
     });
 </script>
 @stop

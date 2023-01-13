@@ -4,6 +4,7 @@
 <form class="frmPacientes" id="Grupo" enctype="multipart/form-data" action="/detallegrupoantibioticos/{{$grupo_antibiotico->id}}" method="POST">
   @csrf
   @method('PUT')
+  <input name"_token" hidden value="{{ csrf_token() }}" type="text">
   <div id="frm-pacientes" class="tabpanel">
     <ul class="nav nav-tabs" role="tablist">
       <li class="nav-item" role="presentation">
@@ -19,7 +20,7 @@
             <!----------------------descripcion---------------->
             <div class="form-group">
               <label for="descripcion">Descipción:</label>
-              <input value="{{$grupo_antibiotico->descripcion}}" minlength="2" maxlength="100" onkeypress="return soloLetras(event)" required class="form-control" id="descripcion" name="descripcion" autofocus>
+              <input title="Sin caracteres especiales • Mínimo 2 carácteres" pattern="[A-Za-z0-9À-ÿ\u00f1\u00d1 '`.-_]*" value="{{$grupo_antibiotico->descripcion}}" minlength="2" maxlength="100" required class="form-control" id="descripcion" name="descripcion" autofocus>
             </div>
                  
           </div>                                                               
@@ -68,11 +69,11 @@
 
               <form action="{{route('grupoantibioticos.store')}}" method="POST">
                 @csrf
-                <input id="id" name="id" hidden value="{{$grupo_antibiotico->id}}">
+                <input id="id" name="id" hidden value="{{$grupo_antibiotico->idGrupoAntibiotico}}">
               <select id="select_disponible" name="select_disponible" required {{-- class="multi_select" --}} size="20">
                 <option value="55" selected>Eliga...</option>
                 @foreach($antibioticos as $antibiotico)
-                <option value="{{$antibiotico->id}}">{{$antibiotico->descripcion}}</option>
+                <option value="{{$antibiotico->idAntibiotico}}">{{$antibiotico->descripcion}}</option>
                 @endforeach
               </select>
             </td>
@@ -98,7 +99,7 @@
               <div>
                 <select required id="select_asignado" name="select_asignado" size="20" style="width: 500px;">
                   @foreach($detallesGA as $ga)
-                  <option value="{{$ga->id}}">{{$ga->antibiotico->descripcion}}</option>
+                  <option value="{{$ga->idDetalleGrupoAntibiotico}}">{{$ga->antibiotico->descripcion}}</option>
                   @endforeach
                 </select>
                 

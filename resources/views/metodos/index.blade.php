@@ -16,9 +16,23 @@
         
     </div>
     <div class="card-body">
-        @if($message = Session::get("error"))
+        {{-- @if($message = Session::get("error"))
 			<div class="alert alert-danger">
 		        <p>{{$message="Método previamente registrado."}}</p>
+			</div>
+        @endif --}}
+        @if (count($errors)>0)
+            <div class="alert alert-danger">
+                <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{$error}}</li>
+                @endforeach
+                </ul>
+            </div>
+        @endif
+        @if($message = Session::get("integrityviolation"))
+			<div class="alert alert-danger">
+		        <p>{{$message="Este método esta siendo usado por pruebas actualmente registradas."}}</p>
 			</div>
         @endif
         <div class="table-responsive">
@@ -35,14 +49,13 @@
                         <td style="width: 90%;">{{$metodo->descripcion}}</td>
                         <td><center>
                             
-                            <form class="formulario" action="{{route('metodos.destroy',$metodo->id)}}" method ="POST">
+                            <form class="formulario" action="{{route('metodos.destroy',$metodo->idMetodo)}}" method ="POST">
                                 @csrf
                                 @method('DELETE')
                                 {{-- <a href="{{route('metodos.edit',Crypt::encrypt($metodo->id))}}" class="btn-xs btn-primary fa fa fa-pencil"><i class="fa fa-edit"></i></a> --}}
-                                <button type="button" id="btnModal{{$metodo->id}}" value="{{$metodo->id}}_{{$metodo->descripcion}}" onclick="modal('{{$metodo->id}}')" data-toggle="modal" data-target="#updateModal" class="btn-xs btn btn-primary fa fa fa-pencil">
+                                <button type="button" id="btnModal{{$metodo->idMetodo}}" value="{{$metodo->idMetodo}}_{{$metodo->descripcion}}" onclick="modal('{{$metodo->idMetodo}}')" data-toggle="modal" data-target="#updateModal" class="btn-xs btn btn-primary fa fa fa-pencil">
                                     <i class="fa fa-edit"></i>
-                                 </button>
-     
+                                </button> 
                                <button class="btn-xs btn btn-danger"><i class="fa fa-trash"></i></button>
                                 
                             </form></center>
@@ -63,9 +76,9 @@
 
 
 @section('js') 
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
 <script>
 function modal(index){
     var valor_modal = document.getElementById('btnModal'+index).value.split('_');

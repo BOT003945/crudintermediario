@@ -7,15 +7,35 @@
 @section('content')
 <div class="card">
     <div class="card-header">
-        <a href="/pacientes-pdf" style="text-decoration:none;color:aliceblue;"><button type="button" class="btn btn-info" >Imprimir Reporte</button></a>
+        @if (count($errors)>0)
+                <div class="alert alert-danger">
+                    <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{$error}}</li>
+                    @endforeach
+                    </ul>
+                </div>
+        @endif
+        {{-- <select id="idPacienteSelect" class="form-control show-tick">
+            {{-- @foreach ($pacientes2 as $paciente)
+                <option value="{{$paciente->idPaciente}}" selected>{{$paciente->Paciente}}</option>
+            @endforeach
+    </select> --}}
+        <a href="/pacientes-pdf" target="_blank" style="text-decoration:none;color:aliceblue;"><button type="button" class="btn btn-info" >Imprimir Reporte</button></a>
         <a style="text-decoration:none;color:aliceblue;" class="float-right d-none d-sm-block">
-            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModal">
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#createPaciente">
                <i class="far fa fa-plus-square"></i> Agregar Paciente
            </button> 
         </a>
         @include('pacientes.create')
-       
+        {{-- @include('pacientes.create2') --}}
+        @include('pacientes.update')
     </div>
+    @if($message = Session::get("integrityviolation"))
+    <div class="alert alert-danger">
+        <p>{{$message="Este paciente podríar esta siendo usado por otros registros."}}</p>
+    </div>
+    @endif
     <div class="card-body">
         <div class="table-responsive">
             <table id="pacientes" class="table table-striped table-bordered">
@@ -32,14 +52,14 @@
                     <tr>
                         <td>{{$paciente->Paciente}}</td>
                         <td>{{$paciente->email}}</td>
-						<td>{{/* date('d/m/Y', strtotime( */$paciente->FecNacFormateada/* )) */}}</td>   
+						<td>{{/* date('d/m/Y', strtotime( */ $paciente->FecNacFormateada/* )) */}}</td>   
                         <td><center>
                             
                             <form class="formulario" action="{{route('pacientes.destroy',$paciente->idPaciente)}}" method ="POST">
                                 @csrf
                                 @method('DELETE')
                                 {{-- <a href="{{route('metodos.edit',Crypt::encrypt($metodo->id))}}" class="btn-xs btn-primary fa fa fa-pencil"><i class="fa fa-edit"></i></a> --}}
-                                <button type="button" id="btnModal{{$paciente->idPaciente}}" value="{{$paciente->idPaciente}}_{{$paciente->Paciente}}_{{$paciente->FecNac}}_{{$paciente->Sexo}}_{{$paciente->id_Empresa}}_{{$paciente->Telefono}}_{{$paciente->email}}_{{$paciente->Rfc}}_{{$paciente->Calle}}_{{$paciente->Numero}}_{{$paciente->Colonia}}_{{$paciente->Cp}}_{{$paciente->Pais}}_{{$paciente->Estado}}_{{$paciente->Municipio}}" onclick="modal('{{$paciente->idPaciente}}')" data-toggle="modal" data-target="#updateModal" class="btn-xs btn btn-primary fa fa fa-pencil">
+                                <button type="button" id="btnModal{{$paciente->idPaciente}}" value="{{$paciente->idPaciente}}~{{$paciente->Paciente}}~{{$paciente->FecNac}}~{{$paciente->Sexo}}~{{$paciente->id_Empresa}}~{{$paciente->Telefono}}~{{$paciente->email}}~{{$paciente->Rfc}}~{{$paciente->Calle}}~{{$paciente->Numero}}~{{$paciente->Colonia}}~{{$paciente->Cp}}~{{$paciente->Pais}}~{{$paciente->Estado}}~{{$paciente->Municipio}}" onclick="modal('{{$paciente->idPaciente}}')" data-toggle="modal" data-target="#updatePaciente" class="btn-xs btn btn-primary fa fa fa-pencil">
                                     <i class="fa fa-edit"></i>
                                 </button>
                                <button class="btn-xs btn btn-danger"><i class="fa fa-trash"></i></button>
@@ -52,12 +72,14 @@
             </table>
         </div>
     </div>
-    @include('pacientes.update')
+    
+    
 </div>
 @stop
 
 @section('css')
 <link href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css" integrity="sha512-ARJR74swou2y0Q2V9k0GbzQ/5vJ2RBSoCWokg4zkfM29Fb3vZEQyv0iWBMW/yvKgyHSR/7D64pFMmU8nYmbRkg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 @stop
 
 @section('js') 
@@ -69,7 +91,7 @@
 function modal(index){
     /* window.location = "#Opcional"; */
     /* document.getElementById("Form").reset(); */
-    var valor_modal = document.getElementById('btnModal'+index).value.split('_');
+    var valor_modal = document.getElementById('btnModal'+index).value.split('~');
     id = valor_modal[0];
     paciente = valor_modal[1];
     fechaNac = valor_modal[2];
@@ -89,14 +111,14 @@ function modal(index){
     valor_seleccionado = valor_seleccionado.replace('valor', index);
 
     if(sexo=="H"){
-        $("#SexoEdit1").prop("checked", true);
+        $("#SexoEditH").prop("checked", true);
     }
     if(sexo==""){
-        $("#SexoEdit").val('k');
-        /* alert('Mujer'); */
+            $("#SexoEditH").prop("checked", false);
+            $("#SexoEditM").prop("checked", false);
     }
     if(sexo=="M"){
-        $("#SexoEdit").prop("checked", true);
+        $("#SexoEditM").prop("checked", true);
         /* alert('Mujer'); */
     }
     
@@ -141,10 +163,11 @@ $('.formulario').submit(function(e){
 }); 
 </script>
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js" 
+integrity="sha512-yDlE7vpGDP7o2eftkCiPZ+yuUyEcaBwoJoIhdXv71KZWugFqEphIS3PU60lEkFaz8RxaVsMpSvQxMBaKVwA5xg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
     $(document).ready(function () {
-        $('#pacientes').DataTable({"order": [[ 0, 'desc' ]]});
+        $('#pacientes').DataTable({"order": [[ 0, 'asc' ]]});
     });
 </script>
 @stop

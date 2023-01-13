@@ -14,6 +14,7 @@
            </button> 
         </a>
         @include('bacterias.create')
+        @include('bacterias.edit')
     </div>
     <div class="card-body">
         @if($message = Session::get("error"))
@@ -33,13 +34,16 @@
                 <tbody>
                     @foreach ($bacterias as $bacteria)
                     <tr>
-                        <td style="width: 25%;">{{$bacteria->id}}</td>
+                        <td style="width: 25%;">{{$bacteria->idBacteria}}</td>
                         <td style="width: 65%;">{{$bacteria->descripcion}}</td>
                         <td><center>
-                            <form class="formulario" action="{{route('bacterias.destroy',$bacteria->id)}}" method ="POST">
+                            <form class="formulario" action="{{route('bacterias.destroy',$bacteria->idBacteria)}}" method ="POST">
                                 @csrf
                                 @method('DELETE')
-                                <a href="{{route('bacterias.edit',Crypt::encrypt($bacteria->id))}}" class="btn-xs btn-primary fa fa fa-pencil"><i class="fa fa-edit"></i></a>
+                                {{-- <a href="{{route('bacterias.edit',Crypt::encrypt($bacteria->idBacteria))}}" class="btn-xs btn-primary fa fa fa-pencil"><i class="fa fa-edit"></i></a> --}}
+                                <button type="button" id="btnModal{{$bacteria->idBacteria}}" value="{{$bacteria->idBacteria}}_{{$bacteria->descripcion}}" onclick="modal('{{$bacteria->idBacteria}}')" data-toggle="modal" data-target="#editModal" class="btn-xs btn btn-primary fa fa fa-pencil">
+                                    <i class="fa fa-edit"></i>
+                                </button>                                
                             
                                <button class="btn-xs btn btn-danger"><i class="fa fa-trash"></i></button>
                                 
@@ -58,7 +62,20 @@
     <link href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" rel="stylesheet">
 @stop
 
-@section('js') {{--SweetAlert Vista--}}
+@section('js') 
+<script>
+    function modal(index){
+        var valor_modal = document.getElementById('btnModal'+index).value.split('_');
+        id = valor_modal[0];
+        descripcion = valor_modal[1];
+        var valor_seleccionado = "{{route('bacterias.update', 'valor' )}}";
+        valor_seleccionado = valor_seleccionado.replace('valor', index)
+    
+        $("#editBacterias").attr("action", valor_seleccionado);
+        $("#descripcionEdit").val(descripcion);
+    }
+</script>
+{{--SweetAlert Vista--}}
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @if(session('eliminar')=='Echo')
     <script>

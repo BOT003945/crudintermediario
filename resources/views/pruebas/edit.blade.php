@@ -2,18 +2,16 @@
 @section('content_header')
 <h2>Configuración de Pruebas</h2>
 <div style="background-color:rgba(240, 248, 255, 0);">
-        <div style="text-align:right" >
-            <a href="/pruebas"><button type="button" class="btn btn-secondary"><i class="far fa fa-arrow-left">
-            </i> Regresar</button></a>    
-        </div>   
+    <div style="text-align:right" >
+        <a href="/pruebas"><button type="button" class="btn btn-secondary"><i class="far fa fa-arrow-left">
+            </i> Regresar</button>
+        </a>    
+    </div>   
 </div>
-    
-
 @stop
 
 @section('content')
-
-<form enctype="multipart/form-data" action="/pruebas/{{$prueba->id}}" method="POST">
+<form enctype="multipart/form-data" action="/pruebas/{{$prueba->idPrueba}}" method="POST">
         @csrf
         @method('PUT')
         <div class="row" id="principio">
@@ -73,8 +71,8 @@
                                     <label>Departamento</label>
                                 </div>
                                 <div class="col-7">
-                                    <select data-dropup-auto="false" id="departamento" class="selectpicker show-tick form-control" data-width="100%" name="departamento" data-live-search="true" required>
-                                        <option value="208">Escoga un departamento</option>
+                                    <select data-dropup-auto="false" id="departamento" class="selectpicker show-tick form-control" data-width="100%" name="departamento" data-live-search="true">
+                                        {{-- <option value="208">Escoga un departamento</option> --}}
                                         @foreach($deptos as $depto)
                                         <option value="{{$depto->id}}" {{($depto->id == $prueba->id_Departamento)?'selected':''}} data-content="<i class='fa fa-edit'></i> {{$depto->Depto}}">{{$depto->Depto}}</option>
                                         @endforeach
@@ -106,9 +104,9 @@
                                     <label>Método</label>
                                 </div>
                                 <div class="col-7">
-                                    <select data-dropup-auto="false" class="selectpicker show-tick form-control"  data-width="100%" id="metodo" name="metodo" required data-live-search="true">
+                                    <select data-dropup-auto="false" class="selectpicker show-tick form-control"  data-width="100%" id="metodo" name="metodo" data-live-search="true">
                                         @foreach($metodos as $metodo)
-                                        <option value="{{$metodo->id}}" data-content="<i class='fa fa-edit'></i> {{$metodo->descripcion}}" {{($metodo->id == $prueba->id_Metodo)?'selected':''}}>{{$metodo->descripcion}}</option>
+                                        <option value="{{$metodo->idMetodo}}" data-content="<i class='fa fa-edit'></i> {{$metodo->descripcion}}" {{($metodo->idMetodo == $prueba->id_Metodo)?'selected':''}}>{{$metodo->descripcion}}</option>
                                         @endforeach
                                     </select>
                                 </div>                            
@@ -151,7 +149,7 @@
                             <hr>
                             <div class="row">
                                 <div class="col-4 col-md-3 col-lg-2">
-                                    <input value="{{$prueba->antibiograma}}" {{$prueba->antibiograma=="1"?'Checked':''}} data-val="true" id="antibiograma" name="antibiograma" type="checkbox" value="1"><input name="antibiograma" type="hidden" value="1">
+                                    <input id="antibiograma" name="antibiograma" type="checkbox" {{$prueba->antibiograma=="1"?'Checked':''}} value="1">{{-- <input name="antibiograma" type="hidden" value="1"> --}}
                                     <label style="text-align:left"> Antibiograma</label>
                                 </div>                            
                             </div>
@@ -180,7 +178,7 @@
                                     <div class="col-7">
                                         <select id="sexo" name="sexo" class="selectpicker show-tick form-control">
                                             <option value="{{$prueba->sexo}}" data-content="<i class='fa fa-edit'></i> {{$prueba->sexo}}" selected>{{$prueba->sexo}}</option>
-                                            <option value="Ambos">Ambos</option>
+                                            <option value="Indistinto">Indistinto</option>
                                             <option value="Femenino">Femenino</option>
                                             <option value="Masculino">Masculino</option>
                                         </select>
@@ -193,9 +191,14 @@
                                     </div>
                                     <div class="col-7">
                                         <select id="TipoResultado" name="TipoResultado" class="selectpicker form-control show-tick">
-                                            <option value="{{$prueba->TipoResultado}}" data-content="<i class='fa fa-edit'></i> {{$prueba->TipoResultado}}" selected>{{$prueba->TipoResultado}}</option>
-                                            <option value="Númerico">Númerico</option>
-                                            <option value="Texto">Texto</option>
+                                            @if($prueba->TipoResultado === "1")
+                                            <option value="{{$prueba->TipoResultado}}" data-content="<i class='fa fa-edit'></i> {{$prueba->TipoResultado = "Númerico"}}" selected>{{$prueba->TipoResultado="Númerico"}}</option>
+                                            @endif
+                                            @if($prueba->TipoResultado === "2")
+                                            <option value="{{$prueba->TipoResultado}}" data-content="<i class='fa fa-edit'></i> {{$prueba->TipoResultado = "Texto"}}" selected>{{$prueba->TipoResultado = "Texto"}}</option>
+                                            @endif
+                                            <option value="1">Númerico</option>
+                                            <option value="2">Texto</option>
                                         </select>
                                     </div>
                                 </div>
@@ -250,7 +253,7 @@
                                         <label>Días: </label>
                                         <select class="selectpicker show-tick" data-dropup-auto="false" data-width="fit" id="dias" name="dias">
                                             <option class="show-tick" value="{{$prueba->dias}}" selected>{{$prueba->dias}}</option>
-                                            <option value="1">1</option>
+                                            <option value="0">0</option><option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
                                             <option value="4">4</option>
@@ -283,7 +286,7 @@
                                         </select>
                                         <label>Horas: </label>                       
                                         <select id="horas" class="selectpicker show-tick" data-dropup-auto="false" data-width="fit" name="horas">
-                                            <option value="{{$prueba->horas}}" selected>{{$prueba->horas}}</option>
+                                            <option value="{{$prueba->horas}}" selected>{{$prueba->horas}}</option><option value="0">0</option>
                                             <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
                                             <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
                                             <option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
@@ -293,7 +296,7 @@
                                         </select>
                                         <label>Minutos: </label>
                                         <select class="selectpicker show-tick" data-dropup-auto="false" data-width="fit" id="minutos" name="minutos">
-                                            <option value="{{$prueba->minutos}}" selected>{{$prueba->minutos}}</option>
+                                            <option value="{{$prueba->minutos}}" selected>{{$prueba->minutos}}</option><option value="0">0</option>
                                             <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
                                             <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
                                             <option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
@@ -364,8 +367,8 @@
                                         <label>Tipo de valor de normalidad</label>
                                     </div>
                                     <div class="col-7">
-                                        <select  class="form-control" id="tipo_valor_normalidad" name="tipo_valor_normalidad" onchange="showInp()">
-                                            <option value="{{$prueba->tipo_valor_normalidad}}" selected>{{$prueba->tipo_valor_normalidad}}</option>
+                                        <select class="selectpicker show-tick form-control" id="tipo_valor_normalidad" name="tipo_valor_normalidad" onchange="showInp()">
+                                            <option value="{{$prueba->tipo_valor_normalidad}}" data-content="<i class='fa fa-edit'></i> {{$prueba->tipo_valor_normalidad}}" selected>{{$prueba->tipo_valor_normalidad}}</option>
                                             <option value="Texto libre">Texto libre</option>
                                             <option value="Rango númerico">Rango númerico</option>
                                         </select>
@@ -426,46 +429,52 @@
                             <tr>
                                 <th scope="col" style="width: 15%;">Sexo</th>
                                 <th scope="col" style="width: 15%;">Unidad</th>
-                                <th scope="col" style="width: 15%;">Edad Mínima</th>
-                                <th scope="col" style="width: 15%;">Edad Máxima</th>
+                                <th scope="col" style="width: 10%;">Edad Mínima</th>
+                                <th scope="col" style="width: 10%;">Edad Máxima</th>
                                 <th scope="col" style="width: 15%;">Val.Mínima</th>
                                 <th scope="col" style="width: 15%;">Val.Máxima</th>
+                                <th scope="col" style="width: 15%;">Valores de Referencia en texto</th>
                                 <td scope="col" style="width: 5%;">Acciones</td>
                             </tr>
                         </thead>
                         <tbody>
                             @if($valoresreferancias->count()>0)
                             @foreach ($valoresreferancias as $valoresreferancia)
-                                <tr id="fila{{$valoresreferancia->id}}">
-                                    <td hidden><input id="id_valoref" type="hidden" value="{{$valoresreferancia->id}}"></td>
+                                <tr id="fila{{$valoresreferancia->idValorReferencia}}">
+                                    <td hidden><input id="id_valoref" type="hidden" value="{{$valoresreferancia->idValorReferencia}}"></td>
                                     <td>
-                                        <input autocomplete="off" id="sexovalref1{{$valoresreferancia->id}}" required pattern="[Ii]ndistinto|[Ff]emenino|[Mm]asculino" list="l1{{$valoresreferancia->id}}" readonly name="sexovalref1[]" type="text" class="form-control" value="{{$valoresreferancia->Sexo}}" style="border-color: rgba(255, 255, 255, 0);background-color:rgba(0, 0, 0, 0);" title="Escriba o seleccione --Indistinto, Femenino o Masculino--">
-                                        <datalist id="l1{{$valoresreferancia->id}}">
+                                        <input autocomplete="off" id="sexovalref1{{$valoresreferancia->idValorReferencia}}" required pattern="[Ii]ndistinto|[Ff]emenino|[Mm]asculino" list="l1{{$valoresreferancia->idValorReferencia}}" readonly name="sexovalref1[]" type="text" class="form-control" value="{{$valoresreferancia->Sexo}}" style="border-color: rgba(255, 255, 255, 0);background-color:rgba(0, 0, 0, 0);" title="Escriba o seleccione --Indistinto, Femenino o Masculino--">
+                                        <datalist id="l1{{$valoresreferancia->idValorReferencia}}">
                                             <option>Indistinto</option>
                                             <option>Femenino</option>
                                             <option>Masculino</option>
                                         </datalist>
                                     </td>
                                     <td>
-                                        <input autocomplete="off" id="Edad1{{$valoresreferancia->id}}" required pattern="[Aa]años|[Mm]eses|[Dd]ías" list="l2{{$valoresreferancia->id}}" readonly name="Edad1[]" type="text" class="form-control" value="{{$valoresreferancia->Edad}}" style="border-color: rgba(255, 255, 255, 0);background-color:rgba(0, 0, 0, 0);" title="Escriba o seleccione --Años, meses o días--">
-                                        <datalist id="l2{{$valoresreferancia->id}}">
+                                        <input autocomplete="off" id="Edad1{{$valoresreferancia->idValorReferencia}}" required pattern="[Aa]años|[Mm]eses|[Dd]ías" list="l2{{$valoresreferancia->idValorReferencia}}" readonly name="Edad1[]" type="text" class="form-control" value="{{$valoresreferancia->Edad}}" style="border-color: rgba(255, 255, 255, 0);background-color:rgba(0, 0, 0, 0);" title="Escriba o seleccione --Años, meses o días--">
+                                        <datalist id="l2{{$valoresreferancia->idValorReferencia}}">
                                             <option value="Años"></option>
                                             <option>Meses</option>
                                             <option>Días</option>
                                         </datalist>
                                     </td>
-                                    <td><input id="EdadMin1{{$valoresreferancia->id}}" readonly name="EdadMin1[]" autocomplete="off" class="form-control" type="number" max="100" value="{{$valoresreferancia->EdadMin}}" style="border-color: rgba(255, 255, 255, 0);background-color:rgba(0, 0, 0, 0);"></td>
-                                    <td><input id="EdadMax1{{$valoresreferancia->id}}" readonly name="EdadMax1[]" autocomplete="off" class="form-control" type="number" max="120" value="{{$valoresreferancia->EdadMax}}" style="border-color: rgba(255, 255, 255, 0);background-color:rgba(0, 0, 0, 0);" ></td>
-                                    <td><input id="RefMin1{{$valoresreferancia->id}}" readonly name="RefMin1[]" autocomplete="off" class="form-control" step="0.01" placeholder="0.00" type="number" max="100" value="{{$valoresreferancia->ValMin}}" style="border-color: rgba(255, 255, 255, 0);background-color:rgba(0, 0, 0, 0);" ></td>
-                                    <td><input id="RefMax1{{$valoresreferancia->id}}" readonly name="RefMax1[]" autocomplete="off" class="form-control" step="0.01" placeholder="0.00" type="number" max="100" value="{{$valoresreferancia->ValMax}}" style="border-color: rgba(255, 255, 255, 0);background-color:rgba(0, 0, 0, 0);" ></td>
+                                    <td><input id="EdadMin1{{$valoresreferancia->idValorReferencia}}" readonly name="EdadMin1[]" autocomplete="off" class="form-control" type="number" max="100" value="{{$valoresreferancia->EdadMin}}" style="border-color: rgba(255, 255, 255, 0);background-color:rgba(0, 0, 0, 0);"></td>
+                                    <td><input id="EdadMax1{{$valoresreferancia->idValorReferencia}}" readonly name="EdadMax1[]" autocomplete="off" class="form-control" type="number" max="120" value="{{$valoresreferancia->EdadMax}}" style="border-color: rgba(255, 255, 255, 0);background-color:rgba(0, 0, 0, 0);" ></td>
+                                    <td><input id="RefMin1{{$valoresreferancia->idValorReferencia}}" readonly name="RefMin1[]" autocomplete="off" class="form-control" step="0.01" placeholder="0.00" type="number" max="100" value="{{$valoresreferancia->ValMin}}" style="border-color: rgba(255, 255, 255, 0);background-color:rgba(0, 0, 0, 0);" ></td>
+                                    <td><input id="RefMax1{{$valoresreferancia->idValorReferencia}}" readonly name="RefMax1[]" autocomplete="off" class="form-control" step="0.01" placeholder="0.00" type="number" max="100" value="{{$valoresreferancia->ValMax}}" style="border-color: rgba(255, 255, 255, 0);background-color:rgba(0, 0, 0, 0);" ></td>
+                                    <td>
+                                        <textarea id="TextoValores{{$valoresreferancia->idValorReferencia}}" readonly name="TextoValores[]" autocomplete="off" class="form-control" placeholder="0.00" max="150" style="border-color: rgba(255, 255, 255, 0);background-color:rgba(0, 0, 0, 0);" >
+                                            {{$valoresreferancia->TextoValores}}
+                                        </textarea>
+                                    </td>
                                     <td style="width: 8%;">
-                                        <button style="border:0;background-color: #007bff" type="button" id="btnEditar" data-toggle="modal" onclick="edicionFilas('{{$valoresreferancia->id}}');" class="botonEditarB">
+                                        <button style="border:0;background-color: #007bff" type="button" id="btnEditar" data-toggle="modal" onclick="edicionFilas('{{$valoresreferancia->idValorReferencia}}');" class="botonEditarB">
                                             <i style="color: #ffffff" class="fa fa-edit"></i>
                                         </button>
-                                        <button style="border:0;background-color: #dc3545" type="button" id="btnEliminar" onclick="deshacer('{{$valoresreferancia->id}}');" class="botonEliminarB">
+                                        <button style="border:0;background-color: #dc3545" type="button" id="btnEliminar" onclick="deshacer('{{$valoresreferancia->idValorReferencia}}');" class="botonEliminarB">
                                             <i style="color: #ffffff" class="fa fa-trash"></i>
                                         </button>
-                                        <button style="border:0;background-color: #17a2b8" type="button" id="btnCheckDB{{$valoresreferancia->id}}" onclick="checkEdicionFilas('{{$valoresreferancia->id}}');" class="btnCheck">
+                                        <button style="border:0;background-color: #17a2b8" type="button" id="btnCheckDB{{$valoresreferancia->idValorReferencia}}" onclick="checkEdicionFilas('{{$valoresreferancia->idValorReferencia}}');" class="btnCheck">
                                             <i style="color: #ffffff" class="fa fa-check"></i>
                                         </button>
                                         
@@ -516,6 +525,9 @@ function edicionNuevasFilas(index){
   $("#RefMax1"+index).removeAttr("readonly");
   document.getElementById("RefMax1"+index).style.borderColor = "blue";
 
+  $("#TextoValores"+index).removeAttr("readonly");
+  document.getElementById("TextoValores"+index).style.borderColor = "blue";
+
   $(".btnCheck").attr('disabled','disabled');
       document.getElementById('btnGuardarPrueba').disabled = true;
       document.getElementById('btnAgregar').disabled = true;
@@ -544,6 +556,9 @@ function checkEdicionNuevasFilas(index){
   $("#RefMax1"+index).attr("readonly","readonly");
   document.getElementById("RefMax1"+index).style.borderColor = 'rgba(255, 255, 255, 0)';
 
+  $("#TextoValores"+index).attr("readonly","readonly");
+  document.getElementById("TextoValores"+index).style.borderColor = 'rgba(255, 255, 255, 0)';
+
   document.getElementById('btnGuardarPrueba').disabled = false;
       document.getElementById('btnAgregar').disabled = false;
       $(".botonEliminarB").removeAttr('disabled');
@@ -563,20 +578,7 @@ $(document).ready(function(){
         }
     });  
 })
-</script>
-
-<script>
-    $(document).ready(function(){
-        var guardar = 1;
-        $('#btnEditarPrueba').click(function(){
-            cambiarvalor(); 
-            function cambiarvalor(){
-            
-                $('#Redireccionador').val(guardar);
-            }
-        });  
-    })
-</script> --}}
+</script>--}}
 
 <script>
 $(document).ready(function(){
@@ -593,13 +595,22 @@ $(document).ready(function(){
             var EdadMax1 =  document.getElementById("EdadMax").value;
             var ValMin1 =  document.getElementById("RefMin").value;
             var ValMax1 =  document.getElementById("RefMax").value; 
+            var TextoValor =  document.getElementById("Textos").value;
                     
-            var fila = '<tr class="selected" id="fila'+cont+'"><td><input title="Escriba o seleccione --Años, meses o días--" autocomplete="off" id="sexovalref1'+cont+'" required pattern="[Ii]ndistinto|[Ff]emenino|[Mm]asculino" list="l4'+cont+'" readonly name="sexovalref1[]" type="text" class="form-control" value="'+Sexo1+'" style="border-color: rgba(255, 255, 255, 0);background-color:rgba(0, 0, 0, 0);"><datalist id="l4'+cont+'"><option>Indistinto</option><option>Femenino</option><option>Masculino</option></datalist></td><td><input title="Escriba o seleccione --Años, meses o días--" autocomplete="off" id="Edad1'+cont+'" required pattern="[Aa]años|[Mm]eses|[Dd]ías" list="l3'+cont+'" readonly name="Edad1[]" type="text" class="form-control" value="'+Edad1+'" style="border-color:rgba(0, 0, 0, 0); background-color: rgba(0, 255, 255, 0);"><datalist id="l3'+cont+'"><option>Años</option><option>Meses</option><option>Días</option></datalist></td><td><input autocomplete="off" class="form-control" readonly style="border-color:rgba(0, 0, 0, 0); background-color: rgba(0, 255, 255, 0);" type="text" id="EdadMin1'+cont+'" name="EdadMin1[]" value="'+EdadMin1+'"></td><td><input autocomplete="off" class="form-control" readonly style="border-color:rgba(0, 0, 0, 0); background-color: rgba(0, 255, 255, 0);" type="text" id="EdadMax1'+cont+'" name="EdadMax1[]" value="'+EdadMax1+'"></td><td><input autocomplete="off" class="form-control" readonly style="border-color:rgba(0, 0, 0, 0); background-color: rgba(0, 255, 255, 0);" type="text" id="RefMin1'+cont+'" name="RefMin1[]" value="'+ValMin1+'"></td><td><input autocomplete="off" class="form-control" readonly style="border-color:rgba(0, 0, 0, 0); background-color: rgba(0, 255, 255, 0);" type="text" id="RefMax1'+cont+'" name="RefMax1[]" value="'+ValMax1+'"></td><td><button style="border:0;background-color: #007bff" type="button" onclick="edicionNuevasFilas('+cont+');" class="botonEditarB"><i style="color: #ffffff" class="fa fa-edit"></i></button> <button style="border:0;background-color: #dc3545" type="button" class="botonEliminarB" onclick="eliminar('+cont+');"><i style="color: #ffffff" class="fa fa-minus"></i></button> <button style="border:0;background-color: #17a2b8" type="button" id="btnCheckId'+cont+'" onclick="checkEdicionNuevasFilas('+cont+');" class="btnCheck"><i style="color: #ffffff" class="fa fa-check"></i></button></td></tr>';
+            var fila = '<tr class="selected" id="fila'+cont+'"><td><input title="Escriba o seleccione --Años, meses o días--" autocomplete="off" id="sexovalref1'+cont+'" required pattern="[Ii]ndistinto|[Ff]emenino|[Mm]asculino" list="l4'+cont+'" readonly name="sexovalref1[]" type="text" class="form-control" value="'+Sexo1+'" style="border-color: rgba(255, 255, 255, 0);background-color:rgba(0, 0, 0, 0);"><datalist id="l4'+cont+'"><option>Indistinto</option><option>Femenino</option><option>Masculino</option></datalist></td><td><input title="Escriba o seleccione --Años, meses o días--" autocomplete="off" id="Edad1'+cont+'" required pattern="[Aa]años|[Mm]eses|[Dd]ías" list="l3'+cont+'" readonly name="Edad1[]" type="text" class="form-control" value="'+Edad1+'" style="border-color:rgba(0, 0, 0, 0); background-color: rgba(0, 255, 255, 0);"><datalist id="l3'+cont+'"><option>Años</option><option>Meses</option><option>Días</option></datalist></td><td><input autocomplete="off" class="form-control" readonly style="border-color:rgba(0, 0, 0, 0); background-color: rgba(0, 255, 255, 0);" type="text" id="EdadMin1'+cont+'" name="EdadMin1[]" value="'+EdadMin1+'"></td><td><input autocomplete="off" class="form-control" readonly style="border-color:rgba(0, 0, 0, 0); background-color: rgba(0, 255, 255, 0);" type="text" id="EdadMax1'+cont+'" name="EdadMax1[]" value="'+EdadMax1+'"></td><td><input autocomplete="off" class="form-control" readonly style="border-color:rgba(0, 0, 0, 0); background-color: rgba(0, 255, 255, 0);" type="text" id="RefMin1'+cont+'" name="RefMin1[]" value="'+ValMin1+'"></td><td><input autocomplete="off" class="form-control" readonly style="border-color:rgba(0, 0, 0, 0); background-color: rgba(0, 255, 255, 0);" type="text" id="RefMax1'+cont+'" name="RefMax1[]" value="'+ValMax1+'"></td><td><textarea id="TextoValores'+cont+'" readonly name="TextoValores[]" autocomplete="off" class="form-control" placeholder="0.00" max="150" style="border-color: rgba(255, 255, 255, 0);background-color:rgba(0, 0, 0, 0);" >'+TextoValor+'</textarea></td><td><button style="border:0;background-color: #007bff" type="button" onclick="edicionNuevasFilas('+cont+');" class="botonEditarB"><i style="color: #ffffff" class="fa fa-edit"></i></button> <button style="border:0;background-color: #dc3545" type="button" class="botonEliminarB" onclick="eliminar('+cont+');"><i style="color: #ffffff" class="fa fa-minus"></i></button> <button style="border:0;background-color: #17a2b8" type="button" id="btnCheckId'+cont+'" onclick="checkEdicionNuevasFilas('+cont+');" class="btnCheck"><i style="color: #ffffff" class="fa fa-check"></i></button></td></tr>';
             cont++;
             $('#valoresref').append(fila);
             // $('#updateModal2').on('shown.bs.modal', function () {
             //     $('#myInput').trigger('focus')
             // })
+
+            $('#sexovalref').val("Indistinto");
+            $('#Edad').val("Días");
+            $('#EdadMin').val("1");
+            $('#EdadMax').val("120");
+            $('#RefMin').val("0.00");
+            $('#RefMax').val("0.00");
+            $('#Textos').val("0 - 0");
         }
     });  
 })
@@ -624,6 +635,10 @@ integrity="sha512-yDlE7vpGDP7o2eftkCiPZ+yuUyEcaBwoJoIhdXv71KZWugFqEphIS3PU60lEkF
 <script src="{{ asset('js/multiregistros.js')}}" rel="stylesheet"></script>
 
 <script>
+if(sexo=="M"){
+    $("#SexoEdit").prop("checked", true);
+    /* alert('Mujer'); */
+}
     valorseleccionado = document.getElementById("Tipo_Valor").value;
     if (valorseleccionado="A" && document.getElementById('Tipo_Valor').checked) {
         document.getElementById("valor_restringido").style.display = "none";

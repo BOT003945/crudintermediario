@@ -28,7 +28,7 @@
                                     <!----------------------descripcion---------------->
                                     <div class="form-group">
                                       <label for="descripcion">Nombre del grupo de antibióticos:</label>
-                                      <input minlength="2" maxlength="100" onkeypress="return soloLetras(event)" required class="form-control" id="descripcion" name="descripcion" autofocus>
+                                      <input title="Sin caracteres especiales • Mínimo 2 carácteres" pattern="[A-Za-z0-9À-ÿ\u00f1\u00d1 '`.-_]*" minlength="2" maxlength="100" onkeypress="return soloLetras(event)" required class="form-control" id="descripcion" name="descripcion" autofocus>
                                     </div>
                                           
                                         

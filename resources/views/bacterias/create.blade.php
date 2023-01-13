@@ -30,7 +30,7 @@
                                        <!----------------------descripcion---------------->
                                        <div class="form-group">
                                           <label for="descripcion">Nombre de la bacteria:</label>
-                                          <input required class="form-control" id="descripcion" name="descripcion" tabindex="3">
+                                          <input title="Sin caracteres especiales • Mínimo 2 carácteres" pattern="[A-Za-z0-9À-ÿ\u00f1\u00d1 '`.-_]*" required class="form-control" id="descripcionCreate" name="descripcionCreate" minlength="2" maxlength="100">
                                         </div>
                                         
                                       
