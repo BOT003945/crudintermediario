@@ -318,25 +318,39 @@ return [
             'label'       => 4,
             'label_color' => 'success',
         ],
-        ['header' => 'account_settings'],
-        [
-            'text' => 'profile',
-            'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'Valores',
-            'url'  => 'valoresreferencias',
-            'icon' => 'fas fa-fw fa-lock',
-        ],  
+        /* ['header' => 'account_settings'], */
+        
         [
             'text' => 'Solicitudes',
             'url'  => 'solicitudes',
-            'icon' => 'fas fa-fw fa-lock',
-        ],        
+            'icon' => 'fas fa-fw fa-file',
+            'label' => 4,
+        ],
+        
+        [
+            'text'    => 'Ordenes',
+            'icon'    => 'fa fa-bars',
+            'submenu' => [
+                [
+                    'text' => 'Registro de orden',
+                    'icon'    => 'fa fa-inbox',
+                    'url'  => '#',
+                ],
+                [
+                    'text' => 'Consulta de orden',
+                    'icon'    => 'fa fa-folder-open',
+                    'url'  => '#',
+                ],
+                [
+                    'text' => 'Captura de resultados',
+                    'icon'    => 'fa fa-clone',
+                    'url'  => '#',
+                ],
+            ],
+        ],
         [
             'text'    => 'Catalogos',
-            'icon'    => 'fas fa-fw fa-share',
+            'icon'    => 'fa fa-archive',
             'submenu' => [
                 [
                     'text' => 'Departamentos',
@@ -349,6 +363,11 @@ return [
                     'url'  => 'doctores',
                 ],
                 [
+                    'text' => 'Doctores AJAX',
+                    'icon'    => 'fas fa-user-md',
+                    'url'  => 'doctoresajax',
+                ],
+                [
                     'text'    => 'Empresas',
                     'icon'    => 'fas fa-building',
                     'url'     => 'empresas',
@@ -359,11 +378,7 @@ return [
                     'icon'    => 'fas fa-archive',
                     'url'  => '/estudios',
                 ], */
-                [
-                    'text' => 'Métodos',
-                    'icon'    => 'fas fa-file',
-                    'url'  => 'metodos',
-                ],
+                
                 [
                     'text' => 'Pacientes',
                     'icon'    => 'fas fa-wheelchair',
@@ -377,24 +392,58 @@ return [
             ],
         ],
         [
-            'text'    => 'Configuración',
-            'icon'    => 'fas fa-cog',
+            'text'    => 'Facturación',
+            'icon'    => 'fa fa-fax',
             'submenu' => [
                 [
-                    'text' => 'Formatos',
-                    'icon'    => 'fas fa-th',
-                    'url'  => 'formatos',
+                    'text' => 'Consulta de Facturas',
+                    'icon'    => 'fa fa-newspaper',
+                    'url'  => '#',
                 ],
                 [
-                    'text' => 'Pruebas',
-                    'icon'    => 'fas fa-th',
-                    'url'  => 'pruebas',
+                    'text'    => 'Consulta de pagos',
+                    'icon'    => 'fa fa-inbox',
+                    'url'     => '#',
+                    
                 ],
             ],
         ],
         [
+            'text'    => 'Configuración',
+            'icon'    => 'fas fa-cog',
+            'submenu' => [
+                [
+                    'text' => 'Estudios',
+                    'icon'    => 'fa fa-university',
+                    'url'  => 'estudios',
+                ],
+                [
+                    'text' => 'Métodos',
+                    'icon'    => 'fas fa-file',
+                    'url'  => 'metodos',
+                ],
+                [
+                    'text' => 'Paquetes',
+                    'icon'    => 'fas fa-th',
+                    'url'  => 'paquetes',
+                ],
+                [
+                    'text' => 'Precios',
+                    'icon'    => 'fa fa-suitcase',
+                    'url'  => 'precios',
+                ],
+                
+                [
+                    'text' => 'Pruebas',
+                    'icon'    => 'fa fa-book',
+                    'url'  => 'pruebas',
+                ],
+            ],
+        ],
+        
+        [
             'text'    => 'Microbiología',
-            'icon'    => 'fas fa-spinner',
+            'icon'    => 'fa fa-asterisk',
             'submenu' => [
                 [
                     'text' => 'Antibióticos',
@@ -413,6 +462,38 @@ return [
                     
                 ],
             ],
+        ],
+        [
+            'text'    => 'Administración',
+            'icon'    => 'fa fa-folder',
+            'submenu' => [
+                [
+                    'text' => '---',
+                    
+                    'url'  => '#',
+                ],
+            ],
+        ],
+        [
+            'text'    => 'Seguridad',
+            'icon'    => 'fa fa-ban',
+            'submenu' => [
+                [
+                    'text' => 'Usuarios',
+                    'icon'    => 'fa fa-users',
+                    'url'  => '#',
+                ],
+            ],
+        ],
+        [
+            'text'    => 'solicituds',
+           
+            'url'  => 'solicituds',
+        ],
+        [
+            'text'    => 'pacientes2',
+           
+            'url'  => 'pacientes2',
         ],
         
     ],
